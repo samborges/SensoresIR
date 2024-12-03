@@ -1,0 +1,44 @@
+
+% Ler o arquivo CSV
+filename = 'arrays\temperatura_AMG_8833\Array_DadosAluminioNatural_200mm_AMG8833.txt';
+
+
+% Exibir os dados lidos
+disp('Dados lidos do arquivo:');
+disp(data);
+
+% Inicializar a array mediaMovelInicial com 64 índices
+mediaMovelInicial = zeros(1, 64);
+
+% Preencher a array com os valores do arquivo CSV lido
+for i = 1:min(64, numel(data))
+    mediaMovelInicial(i) = movmean(data(i), 10);
+end
+
+%-------------------------------------------------------------------------%
+
+
+% Extrair a quarta coluna
+quarta_coluna = data(:, 4);
+
+% Aplicar o filtro de média móvel com 10 posições
+filtro_media_movel = movmean(quarta_coluna, 10);
+
+
+% Verificar se temos pelo menos 64 dados para preencher a matriz 8x8
+if numel(filtro_media_movel) < 64
+    error('Não há dados suficientes para preencher a matriz 8x8.');
+end
+
+% Selecionar os primeiros 64 dados da média móvel
+dados_para_heatmap = filtro_media_movel(1:64);
+
+% Reformatar os dados em uma matriz 8x8
+matriz_8x8 = reshape(dados_para_heatmap, [8, 8]);
+
+% Criar o mapa de calor
+figure;
+heatmap(matriz_8x8);
+title('Mapa de Calor da Média Móvel');
+xlabel('Colunas');
+ylabel('Linhas');
